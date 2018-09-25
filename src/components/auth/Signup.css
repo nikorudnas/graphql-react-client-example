@@ -1,0 +1,24 @@
+.Signup-Container {
+  margin: auto;
+  max-width: 200px;
+  background: #fafafa;
+  color: #0557a9;
+  border-radius: 10px;
+  border: 2px solid #0557a9;
+  padding: 20px;
+}
+
+.Signup-Container label {
+  color: #0557a9;
+}
+
+.Signup-Container a {
+  color: #0557a9;
+  font-size: 16px;
+  display: block;
+  padding-top: 3px;
+}
+
+.Signup-Container a:hover {
+  opacity: 0.7;
+}
