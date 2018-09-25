@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withApollo } from 'react-apollo';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 
 class Logout extends Component {
   logout = () => {
     localStorage.clear();
-    const { history } = this.props;
+    const { history, client } = this.props;
     history.push('/login');
+    client.resetStore();
   };
 
   render() {
@@ -30,6 +32,9 @@ Logout.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  client: PropTypes.shape({
+    resetStore: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
-export default withRouter(Logout);
+export default withApollo(withRouter(Logout));
