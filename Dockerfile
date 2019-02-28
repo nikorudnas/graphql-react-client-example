@@ -1,4 +1,4 @@
-FROM node:latest
+FROM mhart/alpine-node:11
 
 # Create app directory
 WORKDIR /usr/src/react-app

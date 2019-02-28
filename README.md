@@ -11,3 +11,9 @@ Start:
 > npm install
 > npm start
 ```
+
+## Or run with docker
+
+```
+docker-compose up -d
+```
