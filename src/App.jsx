@@ -1,3 +1,4 @@
+// Import modules
 import React from 'react';
 import {
   BrowserRouter as Router,
@@ -6,10 +7,12 @@ import {
   Switch,
 } from 'react-router-dom';
 
+// Import pages
 import Signup from './components/auth/Signup';
 import Login from './components/auth/Login';
 import Home from './components/Home';
 
+// Create router
 export const App = () => (
   <Router>
     <div id="app">

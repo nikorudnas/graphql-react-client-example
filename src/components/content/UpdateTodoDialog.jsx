@@ -1,3 +1,4 @@
+// Import modules
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,6 +14,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
 
+// updatetodo mutation
+// Send: todo_id, new_content
+// Done: refetchQueries={['allTodos']}
 const UPDATETODO = gql`
   mutation UpdateTodo($_id: ObjectID!, $content: String!) {
     updateTodo(_id: $_id, content: $content) {
@@ -21,6 +25,7 @@ const UPDATETODO = gql`
   }
 `;
 
+// Styles
 const styles = {
   spanEdit: {
     flex: 1,
@@ -30,32 +35,38 @@ const styles = {
   },
 };
 
+// Updatetodo component
 class UpdateTodo extends Component {
   constructor(props) {
     super(props);
 
     const { item } = this.props;
 
+    // If the selected todo has content, display it. Else show empty string
     this.state = {
       open: false,
       content: item.content ? item.content : '',
     };
   }
 
+  // Handle input changes
   handleChange = name => e => {
     this.setState({ [name]: e.target.value });
   };
 
+  // Handle dialog close
   handleClose = () => {
     const { item } = this.props;
 
     this.setState({ open: false, content: item.content ? item.content : '' });
   };
 
+  // Handle dialog open
   handleOpen = () => {
     this.setState({ open: true });
   };
 
+  // Handle update -button submit
   async handleSubmit(e, updatetodo) {
     e.preventDefault();
 
@@ -69,6 +80,7 @@ class UpdateTodo extends Component {
           content,
         },
       });
+      // If update was successful, close the dialog
       this.handleClose();
     } catch (error) {
       console.error(error);
@@ -100,6 +112,7 @@ class UpdateTodo extends Component {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
               disableRestoreFocus
+              PaperProps={{ style: { minWidth: 260 } }}
             >
               <form
                 autoComplete="off"
@@ -148,6 +161,7 @@ class UpdateTodo extends Component {
   }
 }
 
+// Define proptypes
 UpdateTodo.propTypes = {
   item: PropTypes.shape({
     _id: PropTypes.string.isRequired,

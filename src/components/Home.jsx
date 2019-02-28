@@ -1,3 +1,4 @@
+// Import modules
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -5,7 +6,9 @@ import CreateTodo from './content/CreateTodo';
 import TodoItems from './content/TodoList';
 import Logout from './auth/Logout';
 
+// Home container for components
 class TodoContainer extends Component {
+  // On mount, check if token exists in localstorage. Else redirect user to login page
   componentDidMount() {
     const token = localStorage.getItem('token');
 
@@ -27,6 +30,7 @@ class TodoContainer extends Component {
   }
 }
 
+// Define proptypes
 TodoContainer.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,

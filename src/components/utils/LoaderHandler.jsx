@@ -1,6 +1,8 @@
+// Import modules
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+// Styles
 const divStyle = {
   position: 'absolute',
   top: 0,
@@ -22,6 +24,7 @@ const spinnerStyle = {
   zIndex: 1001,
 };
 
+// Loader component to display loading indicator
 export const LoaderHandler = () => (
   <div>
     <div style={divStyle} />

@@ -1,4 +1,4 @@
-// Author: Niko Rudnäs
+// Import modules
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Mutation } from 'react-apollo';
@@ -10,6 +10,9 @@ import './Signup.css';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
 
+// Signup mutation
+// Send: email, password
+// Recieve: JWT
 const SIGNUP = gql`
   mutation Signup($email: String!, $password: String!) {
     signup(email: $email, password: $password) {
@@ -18,6 +21,7 @@ const SIGNUP = gql`
   }
 `;
 
+// Signup component
 class Signup extends Component {
   state = {
     email: '',
@@ -26,6 +30,7 @@ class Signup extends Component {
   };
 
   componentDidMount() {
+    // On mount, check if token exists in localstorage. Else redirect usre to login page
     const token = localStorage.getItem('token');
 
     if (token) {
@@ -34,15 +39,18 @@ class Signup extends Component {
     }
   }
 
+  // Handle input changes
   handleChange = name => e => {
     this.setState({ [name]: e.target.value });
   };
 
+  // Handle signup -button submit
   async handleSubmit(e, login) {
     e.preventDefault();
 
     const { email, password, password2 } = this.state;
 
+    // Compare if the pw and retyped-pw matches
     if (password === password2) {
       try {
         const { data } = await login({
@@ -52,6 +60,7 @@ class Signup extends Component {
           },
         });
 
+        // If signup was successful, add token to localstorage as for 'log in' and redirect user to Home -page
         localStorage.setItem('token', data.signup.token);
         const { history } = this.props;
         history.push('/');
@@ -114,7 +123,7 @@ class Signup extends Component {
               <br />
               <br />
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 type="submit"
                 value="submit"
@@ -137,6 +146,7 @@ class Signup extends Component {
   }
 }
 
+// Define proptypes
 Signup.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,

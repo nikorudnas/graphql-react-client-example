@@ -1,7 +1,9 @@
+// Import modules
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import Fab from '@material-ui/core/Fab';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import React, { Component } from 'react';
@@ -12,6 +14,9 @@ import AddIcon from '@material-ui/icons/Add';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
 
+// Create todo mutation
+// Send: content
+// Done: refetchQueries={['allTodos']}
 const CREATETODO = gql`
   mutation CreateTodo($content: String!) {
     createTodo(content: $content) {
@@ -20,24 +25,29 @@ const CREATETODO = gql`
   }
 `;
 
+// CreateTodo component
 class CreateTodo extends Component {
   state = {
     open: false,
     content: '',
   };
 
+  // Handle input changes
   handleChange = name => e => {
     this.setState({ [name]: e.target.value });
   };
 
+  // Handle dialog close
   handleClose = () => {
     this.setState({ open: false, content: '' });
   };
 
+  // Handle dialog open
   handleOpen = () => {
     this.setState({ open: true });
   };
 
+  // Handle create -button submit
   async handleSubmit(e, createtodo) {
     e.preventDefault();
 
@@ -49,6 +59,7 @@ class CreateTodo extends Component {
           content,
         },
       });
+      // If todo succesfully created, close the dialog
       this.handleClose();
     } catch (error) {
       console.error(error);
@@ -62,14 +73,13 @@ class CreateTodo extends Component {
         {(createtodo, { loading, error }) => (
           <div>
             <Tooltip title="Add new Todo" placement="right">
-              <Button
-                variant="fab"
+              <Fab
                 color="primary"
                 style={{ margin: 8 }}
                 onClick={this.handleOpen}
               >
                 <AddIcon />
-              </Button>
+              </Fab>
             </Tooltip>
             <Dialog
               fullWidth
@@ -78,6 +88,7 @@ class CreateTodo extends Component {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
               disableRestoreFocus
+              PaperProps={{ style: { minWidth: 260 } }}
             >
               <form
                 autoComplete="off"

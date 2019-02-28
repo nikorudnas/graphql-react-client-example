@@ -1,3 +1,4 @@
+// Import modules
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -12,6 +13,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
 
+// Delete todo mutation
+// Send: todo_id
+// Done: refetchQueries={['allTodos']}
 const DELETETODO = gql`
   mutation DeleteTodo($_id: ObjectID!) {
     deleteTodo(_id: $_id) {
@@ -20,6 +24,7 @@ const DELETETODO = gql`
   }
 `;
 
+// Styles
 const styles = {
   spanRemove: {
     flex: 1,
@@ -29,23 +34,28 @@ const styles = {
   },
 };
 
+// DeleteTodo component
 class DeleteTodo extends Component {
   state = {
     open: false,
   };
 
+  // Handle input changes
   handleChange = name => e => {
     this.setState({ [name]: e.target.value });
   };
 
+  // Handle dialog close
   handleClose = () => {
     this.setState({ open: false });
   };
 
+  // Handle dialog open
   handleOpen = () => {
     this.setState({ open: true });
   };
 
+  // Handle create -button submit
   async handleSubmit(e, deletetodo) {
     e.preventDefault();
 
@@ -57,6 +67,7 @@ class DeleteTodo extends Component {
           _id: item._id,
         },
       });
+      // If delete was successful, close the dialog
       this.handleClose();
     } catch (error) {
       console.error(error);
@@ -88,6 +99,7 @@ class DeleteTodo extends Component {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
               disableRestoreFocus
+              PaperProps={{ style: { minWidth: 260 } }}
             >
               <form
                 autoComplete="off"
@@ -97,8 +109,6 @@ class DeleteTodo extends Component {
                 <DialogContent>
                   <h4>{item._id}</h4>
                   <h4>{item.content}</h4>
-                  <br />
-                  <br />
                 </DialogContent>
                 <DialogActions>
                   <Button
@@ -128,6 +138,7 @@ class DeleteTodo extends Component {
   }
 }
 
+// Define proptypes
 DeleteTodo.propTypes = {
   item: PropTypes.shape({
     _id: PropTypes.string.isRequired,

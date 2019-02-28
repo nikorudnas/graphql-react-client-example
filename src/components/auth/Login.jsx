@@ -1,4 +1,4 @@
-// Author: Niko Rudnäs
+// Import modules
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Mutation } from 'react-apollo';
@@ -10,6 +10,9 @@ import './Login.css';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
 
+// Login mutation
+// Send: email, password
+// Recieve: JWT
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -18,6 +21,7 @@ const LOGIN = gql`
   }
 `;
 
+// Login component
 class Login extends Component {
   state = {
     email: '',
@@ -25,6 +29,7 @@ class Login extends Component {
   };
 
   componentDidMount() {
+    // On mount, check if token exists in localstorage. Else redirect user to login page
     const token = localStorage.getItem('token');
 
     if (token) {
@@ -33,10 +38,12 @@ class Login extends Component {
     }
   }
 
+  // Handle input changes
   handleChange = name => e => {
     this.setState({ [name]: e.target.value });
   };
 
+  // Handle login -button submit
   async handleSubmit(e, login) {
     e.preventDefault();
 
@@ -49,8 +56,10 @@ class Login extends Component {
           password,
         },
       });
+      // If login was succesful, add token to localstorage
       localStorage.setItem('token', data.login.token);
       const { history } = this.props;
+      // Redirect user to Home -page
       history.push('/');
     } catch (error) {
       console.error(error);
@@ -87,7 +96,7 @@ class Login extends Component {
               <br />
               <br />
               <Button
-                variant="raised"
+                variant="contained"
                 color="primary"
                 value="submit"
                 type="submit"
@@ -110,6 +119,7 @@ class Login extends Component {
   }
 }
 
+// Define proptypes
 Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,

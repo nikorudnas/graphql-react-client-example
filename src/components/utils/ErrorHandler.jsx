@@ -1,3 +1,4 @@
+// Import modules
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import PropTypes from 'prop-types';
 
+// Dialog component to display errors
 class ErrorDialog extends Component {
   state = {
     openDialog: true,
@@ -17,6 +19,7 @@ class ErrorDialog extends Component {
   };
 
   render() {
+    // Takes the error message as prop and displays it to the user in a dialog
     const { message } = this.props;
     const { openDialog } = this.state;
     return (
@@ -46,6 +49,7 @@ class ErrorDialog extends Component {
   }
 }
 
+// Define proptypes
 ErrorDialog.propTypes = {
   message: PropTypes.string.isRequired,
 };

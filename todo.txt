@@ -1,0 +1,10 @@
+Documentation
+Cleaner error messages
+Disable debugs in production
+< 300px responsiveness
+Add descriptions and 'checked' for todos
+Token checking to a middleware
+JWT & Error to middleware?
+Fonts & UI
+My todos & Given todos + Navbar?
+Passwords does not match error indicator
