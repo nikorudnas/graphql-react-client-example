@@ -5,17 +5,14 @@ import PropTypes from 'prop-types';
 import CreateTodo from './content/CreateTodo';
 import TodoItems from './content/TodoList';
 import Logout from './auth/Logout';
+import { tokenExists } from './utils/token';
 
 // Home container for components
 class TodoContainer extends Component {
   // On mount, check if token exists in localstorage. Else redirect user to login page
   componentDidMount() {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      const { history } = this.props;
-      history.push('/login');
-    }
+    const { history } = this.props;
+    tokenExists(history);
   }
 
   render() {

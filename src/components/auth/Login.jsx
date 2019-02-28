@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import './Login.css';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
+import logger from '../utils/logger';
+import { hasToken } from '../utils/token';
 
 // Login mutation
 // Send: email, password
@@ -30,12 +32,9 @@ class Login extends Component {
 
   componentDidMount() {
     // On mount, check if token exists in localstorage. Else redirect user to login page
-    const token = localStorage.getItem('token');
 
-    if (token) {
-      const { history } = this.props;
-      history.push('/');
-    }
+    const { history } = this.props;
+    hasToken(history);
   }
 
   // Handle input changes
@@ -62,7 +61,7 @@ class Login extends Component {
       // Redirect user to Home -page
       history.push('/');
     } catch (error) {
-      console.error(error);
+      logger(error);
     }
   }
 
@@ -111,7 +110,15 @@ class Login extends Component {
               </Link>
             </form>
             {loading && <LoaderHandler />}
-            {error && <ErrorHandler message={error.toString()} />}
+            {error && (
+              <ErrorHandler
+                message={
+                  error.graphQLErrors[0].message
+                    ? error.graphQLErrors[0].message
+                    : error.toString()
+                }
+              />
+            )}
           </div>
         )}
       </Mutation>

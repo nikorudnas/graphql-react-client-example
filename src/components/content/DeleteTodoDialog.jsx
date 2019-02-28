@@ -12,6 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
+import logger from '../utils/logger';
 
 // Delete todo mutation
 // Send: todo_id
@@ -70,7 +71,7 @@ class DeleteTodo extends Component {
       // If delete was successful, close the dialog
       this.handleClose();
     } catch (error) {
-      console.error(error);
+      logger(error);
     }
   }
 
@@ -105,9 +106,9 @@ class DeleteTodo extends Component {
                 autoComplete="off"
                 onSubmit={async e => this.handleSubmit(e, deletetodo)}
               >
-                <DialogTitle id="alert-dialog-title">Delete todo</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Delete todo:</DialogTitle>
                 <DialogContent>
-                  <h4>{item._id}</h4>
+                  <h5>{item._id}</h5>
                   <h4>{item.content}</h4>
                 </DialogContent>
                 <DialogActions>
@@ -130,7 +131,15 @@ class DeleteTodo extends Component {
               </form>
             </Dialog>
             {loading && <LoaderHandler />}
-            {error && <ErrorHandler message={error.toString()} />}
+            {error && (
+              <ErrorHandler
+                message={
+                  error.graphQLErrors[0].message
+                    ? error.graphQLErrors[0].message
+                    : error.toString()
+                }
+              />
+            )}
           </div>
         )}
       </Mutation>

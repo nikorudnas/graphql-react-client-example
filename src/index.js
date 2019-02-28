@@ -11,7 +11,8 @@ import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import './index.css';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import * as serviceWorker from './serviceWorker';
+import logger from './components/utils/logger';
 
 // Token middleware. Add token to every query
 const authLink = setContext((_, { headers }) => {
@@ -28,12 +29,12 @@ const authLink = setContext((_, { headers }) => {
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
     graphQLErrors.map(({ message, locations, path }) =>
-      console.log(
+      logger(
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       ),
     );
 
-  if (networkError) console.log(`[Network error]: ${networkError}`);
+  if (networkError) logger(`[Network error]: ${networkError}`);
 });
 
 // GraphQL server endpoint
@@ -53,5 +54,7 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-// Use serviceworker
-registerServiceWorker();
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: http://bit.ly/CRA-PWA
+serviceWorker.unregister();

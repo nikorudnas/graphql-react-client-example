@@ -13,6 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
+import logger from '../utils/logger';
 
 // updatetodo mutation
 // Send: todo_id, new_content
@@ -46,6 +47,7 @@ class UpdateTodo extends Component {
     this.state = {
       open: false,
       content: item.content ? item.content : '',
+      inputError: false,
     };
   }
 
@@ -58,7 +60,11 @@ class UpdateTodo extends Component {
   handleClose = () => {
     const { item } = this.props;
 
-    this.setState({ open: false, content: item.content ? item.content : '' });
+    this.setState({
+      open: false,
+      content: item.content ? item.content : '',
+      inputError: false,
+    });
   };
 
   // Handle dialog open
@@ -73,17 +79,24 @@ class UpdateTodo extends Component {
     const { content } = this.state;
     const { item } = this.props;
 
-    try {
-      await updatetodo({
-        variables: {
-          _id: item._id,
-          content,
-        },
-      });
-      // If update was successful, close the dialog
-      this.handleClose();
-    } catch (error) {
-      console.error(error);
+    // Validate the input
+    const parsedContent = content.replace(/\s/g, '');
+
+    if (parsedContent) {
+      try {
+        await updatetodo({
+          variables: {
+            _id: item._id,
+            content,
+          },
+        });
+        // If update was successful, close the dialog
+        this.handleClose();
+      } catch (error) {
+        logger(error);
+      }
+    } else {
+      this.setState({ inputError: true });
     }
   }
 
@@ -118,9 +131,9 @@ class UpdateTodo extends Component {
                 autoComplete="off"
                 onSubmit={async e => this.handleSubmit(e, updatetodo)}
               >
-                <DialogTitle id="alert-dialog-title">Update todo</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Update todo:</DialogTitle>
                 <DialogContent>
-                  <h4>{item._id}</h4>
+                  <h5>{item._id}</h5>
                   <TextField
                     label="Content"
                     name="content"
@@ -153,7 +166,15 @@ class UpdateTodo extends Component {
               </form>
             </Dialog>
             {loading && <LoaderHandler />}
-            {error && <ErrorHandler message={error.toString()} />}
+            {error && (
+              <ErrorHandler
+                message={
+                  error.graphQLErrors[0].message
+                    ? error.graphQLErrors[0].message
+                    : error.toString()
+                }
+              />
+            )}
           </div>
         )}
       </Mutation>

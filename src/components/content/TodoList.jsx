@@ -30,7 +30,15 @@ export const TodoList = () => (
             </div>
           ))}
         {loading && <LoaderHandler />}
-        {error && <ErrorHandler message={error.toString()} />}
+        {error && (
+          <ErrorHandler
+            message={
+              error.graphQLErrors[0].message
+                ? error.graphQLErrors[0].message
+                : error.toString()
+            }
+          />
+        )}
       </div>
     )}
   </Query>

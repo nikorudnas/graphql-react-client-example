@@ -13,6 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
+import logger from '../utils/logger';
 
 // Create todo mutation
 // Send: content
@@ -30,6 +31,7 @@ class CreateTodo extends Component {
   state = {
     open: false,
     content: '',
+    inputError: false,
   };
 
   // Handle input changes
@@ -39,7 +41,7 @@ class CreateTodo extends Component {
 
   // Handle dialog close
   handleClose = () => {
-    this.setState({ open: false, content: '' });
+    this.setState({ open: false, content: '', inputError: false });
   };
 
   // Handle dialog open
@@ -53,21 +55,28 @@ class CreateTodo extends Component {
 
     const { content } = this.state;
 
-    try {
-      await createtodo({
-        variables: {
-          content,
-        },
-      });
-      // If todo succesfully created, close the dialog
-      this.handleClose();
-    } catch (error) {
-      console.error(error);
+    // Validate the input
+    const parsedContent = content.replace(/\s/g, '');
+
+    if (parsedContent) {
+      try {
+        await createtodo({
+          variables: {
+            content,
+          },
+        });
+        // If todo succesfully created, close the dialog
+        this.handleClose();
+      } catch (error) {
+        logger(error);
+      }
+    } else {
+      this.setState({ inputError: true });
     }
   }
 
   render() {
-    const { open, content } = this.state;
+    const { open, content, inputError } = this.state;
     return (
       <Mutation mutation={CREATETODO} refetchQueries={['allTodos']}>
         {(createtodo, { loading, error }) => (
@@ -100,6 +109,7 @@ class CreateTodo extends Component {
                 <DialogContent>
                   <TextField
                     required
+                    error={inputError}
                     autoFocus
                     id="content"
                     label="Content"
@@ -129,7 +139,15 @@ class CreateTodo extends Component {
               </form>
             </Dialog>
             {loading && <LoaderHandler />}
-            {error && <ErrorHandler message={error.toString()} />}
+            {error && (
+              <ErrorHandler
+                message={
+                  error.graphQLErrors[0].message
+                    ? error.graphQLErrors[0].message
+                    : error.toString()
+                }
+              />
+            )}
           </div>
         )}
       </Mutation>

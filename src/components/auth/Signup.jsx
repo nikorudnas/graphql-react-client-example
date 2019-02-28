@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import './Signup.css';
 import LoaderHandler from '../utils/LoaderHandler';
 import ErrorHandler from '../utils/ErrorHandler';
+import logger from '../utils/logger';
+import { hasToken } from '../utils/token';
 
 // Signup mutation
 // Send: email, password
@@ -27,16 +29,14 @@ class Signup extends Component {
     email: '',
     password: '',
     password2: '',
+    inputPasswordError: false,
   };
 
   componentDidMount() {
-    // On mount, check if token exists in localstorage. Else redirect usre to login page
-    const token = localStorage.getItem('token');
+    // On mount, check if token exists in localstorage. Else redirect user to login page
 
-    if (token) {
-      const { history } = this.props;
-      history.push('/');
-    }
+    const { history } = this.props;
+    hasToken(history);
   }
 
   // Handle input changes
@@ -62,24 +62,19 @@ class Signup extends Component {
 
         // If signup was successful, add token to localstorage as for 'log in' and redirect user to Home -page
         localStorage.setItem('token', data.signup.token);
+        this.setState({ inputPasswordError: false });
         const { history } = this.props;
         history.push('/');
       } catch (error) {
-        console.error(error);
+        logger(error);
       }
     } else {
-      console.error('Passwords does not match!');
+      this.setState({ inputPasswordError: true });
     }
   }
 
   render() {
-    const {
-      email,
-      password,
-      password2,
-      inputEmailError,
-      inputPasswordError,
-    } = this.state;
+    const { email, password, password2, inputPasswordError } = this.state;
     return (
       <Mutation mutation={SIGNUP}>
         {(signup, { loading, error }) => (
@@ -90,7 +85,6 @@ class Signup extends Component {
                 type="email"
                 name="email"
                 autoFocus
-                error={inputEmailError}
                 required
                 value={email}
                 onChange={this.handleChange('email')}
@@ -138,7 +132,15 @@ class Signup extends Component {
               </Link>
             </form>
             {loading && <LoaderHandler />}
-            {error && <ErrorHandler message={error.toString()} />}
+            {error && (
+              <ErrorHandler
+                message={
+                  error.graphQLErrors[0].message
+                    ? error.graphQLErrors[0].message
+                    : error.toString()
+                }
+              />
+            )}
           </div>
         )}
       </Mutation>
