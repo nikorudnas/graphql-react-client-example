@@ -1,3 +1,7 @@
 UI/UX enchancements
-Add new fields 'description' and 'checked' for todos
-My todos & Assigned todos + Navbar?
+Make example of a single query to multiple 'endpoints'
+Order the Todos by completition / creation date
+UpdateTodo's dialog update without componentDidUpdate
+Use .env -files
+
+Extra: My todos & Assigned todos + Navbar

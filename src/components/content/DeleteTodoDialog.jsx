@@ -19,9 +19,7 @@ import logger from '../utils/logger';
 // Done: refetchQueries={['allTodos']}
 const DELETETODO = gql`
   mutation DeleteTodo($_id: ObjectID!) {
-    deleteTodo(_id: $_id) {
-      content
-    }
+    deleteTodo(_id: $_id)
   }
 `;
 
@@ -82,7 +80,7 @@ class DeleteTodo extends Component {
       <Mutation mutation={DELETETODO} refetchQueries={['allTodos']}>
         {(deletetodo, { loading, error }) => (
           <div style={{ display: 'flex' }}>
-            <Tooltip title="Delete" placement="top-end">
+            <Tooltip title="Delete" placement="right">
               <span
                 style={styles.spanRemove}
                 role="button"
@@ -108,8 +106,8 @@ class DeleteTodo extends Component {
               >
                 <DialogTitle id="alert-dialog-title">Delete todo:</DialogTitle>
                 <DialogContent>
-                  <h5>{item._id}</h5>
-                  <h4>{item.content}</h4>
+                  <h3>{item.title}</h3>
+                  <h5>Completed: {item.completed.toString()}</h5>
                 </DialogContent>
                 <DialogActions>
                   <Button
@@ -151,7 +149,7 @@ class DeleteTodo extends Component {
 DeleteTodo.propTypes = {
   item: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
   }).isRequired,
 };
 

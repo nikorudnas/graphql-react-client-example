@@ -4,6 +4,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
@@ -16,13 +17,11 @@ import ErrorHandler from '../utils/ErrorHandler';
 import logger from '../utils/logger';
 
 // updatetodo mutation
-// Send: todo_id, new_content
+// Send: new_todo
 // Done: refetchQueries={['allTodos']}
 const UPDATETODO = gql`
-  mutation UpdateTodo($_id: ObjectID!, $content: String!) {
-    updateTodo(_id: $_id, content: $content) {
-      content
-    }
+  mutation UpdateTodo($todo: UpdateTodoInput!) {
+    updateTodo(todo: $todo)
   }
 `;
 
@@ -46,14 +45,41 @@ class UpdateTodo extends Component {
     // If the selected todo has content, display it. Else show empty string
     this.state = {
       open: false,
-      content: item.content ? item.content : '',
+      todo: {
+        _id: item._id || '',
+        title: item.title || '',
+        description: item.description || '',
+        completed: item.completed || false,
+      },
       inputError: false,
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { item } = this.props;
+    // only update chart if the data has changed
+    if (prevProps.item !== item) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        todo: {
+          _id: item._id || '',
+          title: item.title || '',
+          description: item.description || '',
+          completed: item.completed || false,
+        },
+      });
+    }
+  }
+
   // Handle input changes
   handleChange = name => e => {
-    this.setState({ [name]: e.target.value });
+    const { todo } = { ...this.state };
+    if (e.target.value === 'completed') {
+      todo[name] = e.target.checked;
+    } else {
+      todo[name] = e.target.value;
+    }
+    this.setState({ todo });
   };
 
   // Handle dialog close
@@ -62,7 +88,12 @@ class UpdateTodo extends Component {
 
     this.setState({
       open: false,
-      content: item.content ? item.content : '',
+      todo: {
+        _id: item._id || '',
+        title: item.title || '',
+        description: item.description || '',
+        completed: item.completed || false,
+      },
       inputError: false,
     });
   };
@@ -76,18 +107,16 @@ class UpdateTodo extends Component {
   async handleSubmit(e, updatetodo) {
     e.preventDefault();
 
-    const { content } = this.state;
-    const { item } = this.props;
+    const { todo } = this.state;
 
     // Validate the input
-    const parsedContent = content.replace(/\s/g, '');
+    const parsedTitle = todo.title.replace(/\s/g, '');
 
-    if (parsedContent) {
+    if (parsedTitle) {
       try {
         await updatetodo({
           variables: {
-            _id: item._id,
-            content,
+            todo,
           },
         });
         // If update was successful, close the dialog
@@ -101,13 +130,13 @@ class UpdateTodo extends Component {
   }
 
   render() {
-    const { open, content, inputError } = this.state;
-    const { item } = this.props;
+    const { open, todo, inputError } = this.state;
+
     return (
       <Mutation mutation={UPDATETODO} refetchQueries={['allTodos']}>
         {(updatetodo, { loading, error }) => (
           <div style={{ display: 'flex' }}>
-            <Tooltip title="Edit" placement="top-end">
+            <Tooltip title="Edit" placement="left">
               <span
                 style={styles.spanEdit}
                 role="button"
@@ -133,15 +162,35 @@ class UpdateTodo extends Component {
               >
                 <DialogTitle id="alert-dialog-title">Update todo:</DialogTitle>
                 <DialogContent>
-                  <h5>{item._id}</h5>
                   <TextField
-                    label="Content"
-                    name="content"
+                    label="Title"
+                    name="title"
                     autoFocus
                     error={inputError}
                     required
-                    value={content}
-                    onChange={this.handleChange('content')}
+                    value={todo.title}
+                    onChange={this.handleChange('title')}
+                  />
+                  <br />
+                  <br />
+                  <br />
+                  <TextField
+                    id="description"
+                    label="Description"
+                    multiline
+                    rows="4"
+                    variant="outlined"
+                    value={todo.description}
+                    onChange={this.handleChange('description')}
+                  />
+                  <br />
+                  <br />
+                  <span>Completed:</span>
+                  <Checkbox
+                    checked={todo.completed}
+                    onChange={this.handleChange('completed')}
+                    value="completed"
+                    color="primary"
                   />
                   <br />
                   <br />
@@ -186,7 +235,7 @@ class UpdateTodo extends Component {
 UpdateTodo.propTypes = {
   item: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
   }).isRequired,
 };
 

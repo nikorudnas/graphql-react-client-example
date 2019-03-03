@@ -16,13 +16,11 @@ import ErrorHandler from '../utils/ErrorHandler';
 import logger from '../utils/logger';
 
 // Create todo mutation
-// Send: content
+// Send: todo: { title, description }
 // Done: refetchQueries={['allTodos']}
 const CREATETODO = gql`
-  mutation CreateTodo($content: String!) {
-    createTodo(content: $content) {
-      content
-    }
+  mutation CreateTodo($todo: CreateTodoInput!) {
+    createTodo(todo: $todo)
   }
 `;
 
@@ -30,18 +28,24 @@ const CREATETODO = gql`
 class CreateTodo extends Component {
   state = {
     open: false,
-    content: '',
+    todo: { title: '', description: '' },
     inputError: false,
   };
 
   // Handle input changes
   handleChange = name => e => {
-    this.setState({ [name]: e.target.value });
+    const { todo } = { ...this.state };
+    todo[name] = e.target.value;
+    this.setState({ todo });
   };
 
   // Handle dialog close
   handleClose = () => {
-    this.setState({ open: false, content: '', inputError: false });
+    this.setState({
+      open: false,
+      todo: { title: '', description: '' },
+      inputError: false,
+    });
   };
 
   // Handle dialog open
@@ -53,16 +57,16 @@ class CreateTodo extends Component {
   async handleSubmit(e, createtodo) {
     e.preventDefault();
 
-    const { content } = this.state;
+    const { todo } = this.state;
 
     // Validate the input
-    const parsedContent = content.replace(/\s/g, '');
+    const parsedTitle = todo.title.replace(/\s/g, '');
 
-    if (parsedContent) {
+    if (parsedTitle) {
       try {
         await createtodo({
           variables: {
-            content,
+            todo,
           },
         });
         // If todo succesfully created, close the dialog
@@ -76,7 +80,7 @@ class CreateTodo extends Component {
   }
 
   render() {
-    const { open, content, inputError } = this.state;
+    const { open, todo, inputError } = this.state;
     return (
       <Mutation mutation={CREATETODO} refetchQueries={['allTodos']}>
         {(createtodo, { loading, error }) => (
@@ -111,10 +115,22 @@ class CreateTodo extends Component {
                     required
                     error={inputError}
                     autoFocus
-                    id="content"
-                    label="Content"
-                    value={content}
-                    onChange={this.handleChange('content')}
+                    id="title"
+                    label="Title"
+                    value={todo.title}
+                    onChange={this.handleChange('title')}
+                  />
+                  <br />
+                  <br />
+                  <br />
+                  <TextField
+                    id="description"
+                    label="Description"
+                    multiline
+                    rows="4"
+                    variant="outlined"
+                    value={todo.description}
+                    onChange={this.handleChange('description')}
                   />
                   <br />
                   <br />

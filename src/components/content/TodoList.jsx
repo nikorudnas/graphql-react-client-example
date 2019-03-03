@@ -13,7 +13,9 @@ const ALLTODOS = gql`
   query allTodos {
     allTodos {
       _id
-      content
+      title
+      description
+      completed
     }
   }
 `;

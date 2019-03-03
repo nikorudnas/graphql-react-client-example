@@ -10,6 +10,7 @@ import DeleteTodo from './DeleteTodoDialog';
 const styles = {
   paper: {
     display: 'flex',
+    flexDirection: 'column',
     flex: 1,
     maxWidth: 300,
     margin: 'auto',
@@ -17,12 +18,11 @@ const styles = {
   },
   p: {
     display: 'flex',
-    flex: 5,
-    textAlign: 'left',
-    margin: 'auto',
     whiteSpace: 'pre',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    marginTop: 5,
+    marginBottom: 5,
   },
   span: {
     flex: 1,
@@ -34,6 +34,13 @@ const styles = {
   },
   div: {
     display: 'flex',
+    margin: 'auto',
+  },
+  completed: {
+    backgroundColor: '#C8E6C9',
+  },
+  uncompleted: {
+    backgroundColor: '#ffcdd2',
   },
 };
 
@@ -41,12 +48,23 @@ const styles = {
 export const TodoItem = props => {
   const { item } = props;
   return (
-    <Paper style={styles.paper}>
-      <Tooltip title={item.content} placement="left">
-        <p style={styles.p}>
-          <span style={styles.span}>{item.content}</span>
-        </p>
+    <Paper
+      style={
+        item.completed
+          ? { ...styles.paper, ...styles.completed }
+          : { ...styles.paper, ...styles.uncompleted }
+      }
+    >
+      <Tooltip title={item.title} placement="left">
+        <h4 style={styles.p}>
+          <span style={styles.span}>{item.title}</span>
+        </h4>
       </Tooltip>
+
+      <p style={styles.p}>
+        <span style={styles.span}>{item.description}</span>
+      </p>
+
       <div style={styles.div}>
         <UpdateTodo item={item} />
         <DeleteTodo item={item} />
@@ -59,7 +77,7 @@ export const TodoItem = props => {
 TodoItem.propTypes = {
   item: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
   }).isRequired,
 };
 
