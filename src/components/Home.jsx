@@ -16,7 +16,7 @@ const styles = {
 };
 
 // Home container for components
-class TodoContainer extends Component {
+export class Home extends Component {
   // On mount, check if token exists in localstorage. Else redirect user to login page
   componentDidMount() {
     const { history } = this.props;
@@ -36,10 +36,10 @@ class TodoContainer extends Component {
 }
 
 // Define proptypes
-TodoContainer.propTypes = {
+Home.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-export default withRouter(TodoContainer);
+export default withRouter(Home);

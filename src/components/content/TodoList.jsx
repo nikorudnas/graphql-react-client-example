@@ -63,7 +63,7 @@ function sortCompletedTodos(todos) {
 export const TodoList = () => (
   <Query query={ALLTODOS}>
     {({ loading, error, data }) => (
-      <div>
+      <div className="Todos-Container">
         <h2>UNCOMPLETED: </h2>
         <div style={styles.todo_container}>
           {data.allTodos &&
