@@ -7,6 +7,14 @@ import TodoItems from './content/TodoList';
 import Logout from './auth/Logout';
 import { tokenExists } from './utils/token';
 
+// Styles
+const styles = {
+  home: {
+    textAlign: 'center',
+    flex: 1,
+  },
+};
+
 // Home container for components
 class TodoContainer extends Component {
   // On mount, check if token exists in localstorage. Else redirect user to login page
@@ -17,7 +25,7 @@ class TodoContainer extends Component {
 
   render() {
     return (
-      <div className="Home" style={{ textAlign: 'center', flex: 1 }}>
+      <div className="Home" style={styles.home}>
         <Logout />
         <h1>List of Todos:</h1>
         <CreateTodo />

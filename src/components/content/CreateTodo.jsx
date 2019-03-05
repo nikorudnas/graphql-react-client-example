@@ -24,6 +24,16 @@ const CREATETODO = gql`
   }
 `;
 
+// Styles
+const styles = {
+  fab: {
+    margin: 8,
+  },
+  paper: {
+    minWidth: 260,
+  },
+};
+
 // CreateTodo component
 class CreateTodo extends Component {
   state = {
@@ -86,11 +96,7 @@ class CreateTodo extends Component {
         {(createtodo, { loading, error }) => (
           <div>
             <Tooltip title="Add new Todo" placement="right">
-              <Fab
-                color="primary"
-                style={{ margin: 8 }}
-                onClick={this.handleOpen}
-              >
+              <Fab color="primary" style={styles.fab} onClick={this.handleOpen}>
                 <AddIcon />
               </Fab>
             </Tooltip>
@@ -101,14 +107,14 @@ class CreateTodo extends Component {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
               disableRestoreFocus
-              PaperProps={{ style: { minWidth: 260 } }}
+              PaperProps={{ style: styles.paper }}
             >
               <form
                 autoComplete="off"
                 onSubmit={async e => this.handleSubmit(e, createtodo)}
               >
                 <DialogTitle id="alert-dialog-title">
-                  Create new todo
+                  Create new todo:
                 </DialogTitle>
                 <DialogContent>
                   <TextField

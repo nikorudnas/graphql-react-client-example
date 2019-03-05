@@ -33,6 +33,9 @@ const styles = {
     margin: 5,
     cursor: 'pointer',
   },
+  paper: {
+    minWidth: 260,
+  },
 };
 
 // Updatetodo component
@@ -59,17 +62,21 @@ class UpdateTodo extends Component {
     const { item } = this.props;
     // only update chart if the data has changed
     if (prevProps.item !== item) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        todo: {
-          _id: item._id || '',
-          title: item.title || '',
-          description: item.description || '',
-          completed: item.completed || false,
-        },
-      });
+      this.updateState(item);
     }
   }
+
+  // Update the states when new props are received
+  updateState = item => {
+    this.setState({
+      todo: {
+        _id: item._id || '',
+        title: item.title || '',
+        description: item.description || '',
+        completed: item.completed || false,
+      },
+    });
+  };
 
   // Handle input changes
   handleChange = name => e => {
@@ -154,7 +161,7 @@ class UpdateTodo extends Component {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
               disableRestoreFocus
-              PaperProps={{ style: { minWidth: 260 } }}
+              PaperProps={{ style: styles.paper }}
             >
               <form
                 autoComplete="off"

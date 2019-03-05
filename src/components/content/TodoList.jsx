@@ -20,17 +20,72 @@ const ALLTODOS = gql`
   }
 `;
 
+// Styles
+const styles = {
+  todo_container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  todo_item: {
+    margin: 10,
+    width: 300,
+  },
+  hr: {
+    maxWidth: 800,
+  },
+};
+
+// Sort the uncompleted todos so that most recent are first
+function sortUncompletedTodos(todos) {
+  const sortedUncompletedTodos = [];
+  todos.forEach(todo => {
+    if (!todo.completed) {
+      sortedUncompletedTodos.unshift(todo);
+    }
+  });
+  return sortedUncompletedTodos;
+}
+
+// Sort the completed todos so that most recent are first
+function sortCompletedTodos(todos) {
+  const sortedCompletedTodos = [];
+  todos.forEach(todo => {
+    if (todo.completed) {
+      sortedCompletedTodos.unshift(todo);
+    }
+  });
+  return sortedCompletedTodos;
+}
+
 // Todolist component. Pure
+// Map the todos and return own containers for uncompleted and completed
 export const TodoList = () => (
   <Query query={ALLTODOS}>
     {({ loading, error, data }) => (
       <div>
-        {data.allTodos &&
-          data.allTodos.map(item => (
-            <div key={item._id} style={{ margin: 10 }}>
-              <TodoItem item={item} />
-            </div>
-          ))}
+        <h2>UNCOMPLETED: </h2>
+        <div style={styles.todo_container}>
+          {data.allTodos &&
+            sortUncompletedTodos(data.allTodos).map(item => (
+              <div key={item._id} style={styles.todo_item}>
+                <TodoItem item={item} />
+              </div>
+            ))}
+        </div>
+        <br />
+        <div style={{ margin: 10 }}>
+          <hr style={styles.hr} />
+        </div>
+        <h2>COMPLETED: </h2>
+        <div style={styles.todo_container}>
+          {data.allTodos &&
+            sortCompletedTodos(data.allTodos).map(item => (
+              <div key={item._id} style={styles.todo_item}>
+                <TodoItem item={item} />
+              </div>
+            ))}
+        </div>
         {loading && <LoaderHandler />}
         {error && (
           <ErrorHandler

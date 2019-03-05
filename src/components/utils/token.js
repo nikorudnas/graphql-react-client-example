@@ -8,7 +8,7 @@ export function tokenExists(history) {
 }
 
 export function hasToken(history) {
-  // If the user has a token, push to home page
+  // If the user has a token in storage, push to home page
   const token = localStorage.getItem('token');
 
   if (token) {

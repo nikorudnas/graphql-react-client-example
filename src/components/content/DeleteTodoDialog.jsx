@@ -31,6 +31,9 @@ const styles = {
     margin: 5,
     cursor: 'pointer',
   },
+  paper: {
+    minWidth: 260,
+  },
 };
 
 // DeleteTodo component
@@ -98,7 +101,7 @@ class DeleteTodo extends Component {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
               disableRestoreFocus
-              PaperProps={{ style: { minWidth: 260 } }}
+              PaperProps={{ style: styles.paper }}
             >
               <form
                 autoComplete="off"

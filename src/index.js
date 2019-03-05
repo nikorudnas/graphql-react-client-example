@@ -27,26 +27,31 @@ const authLink = setContext((_, { headers }) => {
 
 // Error middleware. Display errors in console
 const errorLink = onError(({ graphQLErrors, networkError }) => {
+  // GraphQL -specific errors
   if (graphQLErrors)
     graphQLErrors.map(({ message, locations, path }) =>
       logger(
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       ),
     );
-
+  // Network -specific errors
   if (networkError) logger(`[Network error]: ${networkError}`);
 });
 
 // GraphQL server endpoint
-const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+const httpLink = new HttpLink({
+  uri: process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4000/graphql',
+});
 
-// Connect to endpoint and user inMemory cache for queries
+// Apply middlewares and connect to endpoint. Use InMemoryCache to cache queries
+// httpLink is terminating so it needs to be last
 const client = new ApolloClient({
   link: ApolloLink.from([authLink, errorLink, httpLink]),
   cache: new InMemoryCache(),
 });
 
-// Wrap the App in ApolloProvider to access the client props and then render the App
+// Wrap the App in ApolloProvider to access the 'client' prop.
+// Render the App
 ReactDOM.render(
   <ApolloProvider client={client}>
     <App />

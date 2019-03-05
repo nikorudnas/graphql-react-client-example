@@ -1,7 +1,7 @@
-UI/UX enchancements
-Make example of a single query to multiple 'endpoints'
-Order the Todos by completition / creation date
-UpdateTodo's dialog update without componentDidUpdate
-Use .env -files
+Tests
+Add created timestamp?
+Token checking as middleware?
 
-Extra: My todos & Assigned todos + Navbar
+Extra: 
+ - My todos & Assigned todos + Navbar
+ - Make example of a single query to multiple 'endpoints' (needs another model or changes to existing)

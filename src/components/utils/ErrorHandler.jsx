@@ -14,6 +14,7 @@ class ErrorDialog extends Component {
     openDialog: true,
   };
 
+  // Close the dialog
   handleClose = () => {
     this.setState({ openDialog: false });
   };

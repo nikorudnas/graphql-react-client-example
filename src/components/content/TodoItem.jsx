@@ -18,19 +18,14 @@ const styles = {
   },
   p: {
     display: 'flex',
-    whiteSpace: 'pre',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    overflowWrap: 'break-word',
     marginTop: 5,
     marginBottom: 5,
   },
   span: {
     flex: 1,
     padding: 10,
-    cursor: 'pointer',
-    whiteSpace: 'pre',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    width: '90%',
   },
   div: {
     display: 'flex',
@@ -44,7 +39,8 @@ const styles = {
   },
 };
 
-// Single TodoItem component. This can be a pure component
+// Single TodoItem component. Pure
+// Render background color depending if the todo is completed or not
 export const TodoItem = props => {
   const { item } = props;
   return (
